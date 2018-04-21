@@ -45,7 +45,15 @@ function connectToDb(string $host, string $user, string $pass, string $name)
 function logResult(PDO $db, array $result)
 {
     $query = $db->prepare('INSERT INTO logs (date, success, time, errorCode, errorString) VALUES (?, ?, ?, ? ,?)');
-    $query->execute(array_values($result));
+    $query->execute(
+        [
+            $result['date'],
+            $result['success'],
+            $result['time'],
+            $result['errorCode'],
+            $result['errorString'],
+        ]
+    );
 }
 
 $db = connectToDb($config['dbHost'], $config['dbUser'], $config['dbPass'], $config['dbName']);
