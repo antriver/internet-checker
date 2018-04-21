@@ -7,18 +7,21 @@ function testConnection(string $host, int $port)
     $date = new DateTime('NOW', new DateTimeZone('Etc/UCT'));
     $errorCode = null;
     $errorString = null;
-    $success = null;
+    $success = false;
     $timeout = 30;
 
     $start = microtime(true);
-    if ($fp = fsockopen($host, $port, $errorCode, $errorString, $timeout)) {
-        $success = true;
-        $errorCode = null;
-        $errorString = null;
-    } else {
+    try {
+        if ($fp = fsockopen($host, $port, $errorCode, $errorString, $timeout)) {
+            $success = true;
+            $errorCode = null;
+            $errorString = null;
+        }
+        fclose($fp);
+    } catch (Throwable $exception) {
         $success = false;
+        $errorString = $exception->getMessage();
     }
-    fclose($fp);
 
     $time = microtime(true) - $start;
 
@@ -48,6 +51,5 @@ function logResult(PDO $db, array $result)
 $db = connectToDb($config['dbHost'], $config['dbUser'], $config['dbPass'], $config['dbName']);
 
 $result = testConnection($config['testHost'], $config['testPort']);
-print_r($result);
 
-logResult($db);
+logResult($db, $result);
