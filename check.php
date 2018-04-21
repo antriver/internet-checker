@@ -52,4 +52,6 @@ $db = connectToDb($config['dbHost'], $config['dbUser'], $config['dbPass'], $conf
 
 $result = testConnection($config['testHost'], $config['testPort']);
 
+print_r($result);
+
 logResult($db, $result);
